@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -16,24 +17,32 @@ func NewImportantDatesHandler() *ImportantDatesHandler {
 }
 
 func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, r *http.Request) {
-	dateOfDeathStr := r.URL.Query().Get("date")
+	var importantDates dtos.GetImportantDates
+	err := json.NewDecoder(r.Body).Decode(&importantDates)
+
+	w.Header().Add("Content-Type", "application/json")
+
+	if err != nil {
+		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Invalid JSON body"))
+		return
+	}
+
+	dateOfDeathStr := importantDates.DateOfDeath
 
 	if dateOfDeathStr == "" {
-		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Missing date"))
+		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Missing date_of_death property"))
 		return
 	}
 
 	dateOfDeath, err := validators.ParseDate(dateOfDeathStr)
 
-	w.Header().Add("Content-Type", "application/json")
-
 	if err != nil {
-		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Invalid date"))
+		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Invalid date_of_death property"))
 		return
 	}
 
 	if dateOfDeath.After(time.Now()) {
-		internal.WriteJSON(w, http.StatusUnprocessableEntity, internal.NewApiError("The date cannot be in the future"))
+		internal.WriteJSON(w, http.StatusUnprocessableEntity, internal.NewApiError("The date_of_death cannot be in the future"))
 		return
 	}
 

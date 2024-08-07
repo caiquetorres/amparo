@@ -1,83 +1,86 @@
 package handlers_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/caiquetorres/amparo/cmd/api/dtos"
 	handlers "github.com/caiquetorres/amparo/cmd/api/hadlers"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestHandleImportantDatesPost(t *testing.T) {
-	t.Run("Valid date param", func(t *testing.T) {
-		r := httptest.NewRequest(http.MethodPost, "/important-dates", nil)
-		q := r.URL.Query()
-		q.Add("date", "2024-02-28")
-		r.URL.RawQuery = q.Encode()
-		w := httptest.NewRecorder()
+	handler := handlers.NewImportantDatesHandler()
 
-		handler := handlers.NewImportantDatesHandler()
-		handler.HandleImportantDatesPost(w, r)
-		resp := w.Result()
-		defer resp.Body.Close()
+	tests := []struct {
+		name           string
+		requestBody    interface{}
+		expectedStatus int
+		expectedBody   string
+	}{
+		{
+			name:           "Missing date_of_death property",
+			requestBody:    struct{}{},
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   `{"message":"Missing date_of_death property"}`,
+		},
+		{
+			name:           "Invalid JSON body",
+			requestBody:    "invalid-json",
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   `{"message":"Invalid JSON body"}`,
+		},
+		{
+			name: "Invalid date format",
+			requestBody: dtos.GetImportantDates{
+				DateOfDeath: "invalid-date",
+			},
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   `{"message":"Invalid date_of_death property"}`,
+		},
+		{
+			name: "Date in the future",
+			requestBody: dtos.GetImportantDates{
+				DateOfDeath: time.Now().AddDate(0, 0, 1).Format("2006-01-02"),
+			},
+			expectedStatus: http.StatusUnprocessableEntity,
+			expectedBody:   `{"message":"The date_of_death cannot be in the future"}`,
+		},
+		{
+			name: "Valid date param",
+			requestBody: dtos.GetImportantDates{
+				DateOfDeath: "2024-02-28",
+			},
+			expectedStatus: http.StatusOK,
+			expectedBody:   `{"schedule_mass": "2024-03-02","register_death": "2024-03-14","pension_request": "2024-05-28","insurance_claim": "2025-02-27"}`,
+		},
+	}
 
-		assert.Equal(t, http.StatusOK, resp.StatusCode)
-		body, _ := io.ReadAll(resp.Body)
-		assert.JSONEq(t, `{"schedule_mass": "2024-03-02","register_death": "2024-03-14","pension_request": "2024-05-28","insurance_claim": "2025-02-27"}`, string(body))
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bodyBytes, err := json.Marshal(tt.requestBody)
+			require.NoError(t, err)
 
-	t.Run("Missing date param", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodPost, "/important-dates", nil)
-		q := req.URL.Query()
-		q.Add("date", "")
-		req.URL.RawQuery = q.Encode()
-		w := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodPost, "/important-dates", bytes.NewBuffer(bodyBytes))
+			req.Header.Set("Content-Type", "application/json")
 
-		handler := handlers.NewImportantDatesHandler()
-		handler.HandleImportantDatesPost(w, req)
-		resp := w.Result()
-		defer resp.Body.Close()
+			w := httptest.NewRecorder()
 
-		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
-		body, _ := io.ReadAll(resp.Body)
-		assert.JSONEq(t, `{"message":"Missing date"}`, string(body))
-	})
+			handler.HandleImportantDatesPost(w, req)
 
-	t.Run("Invalid date param", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodPost, "/important-dates", nil)
-		q := req.URL.Query()
-		q.Add("date", "invalid-date")
-		req.URL.RawQuery = q.Encode()
-		w := httptest.NewRecorder()
+			resp := w.Result()
+			defer resp.Body.Close()
 
-		handler := handlers.NewImportantDatesHandler()
-		handler.HandleImportantDatesPost(w, req)
-		resp := w.Result()
-		defer resp.Body.Close()
-
-		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
-		body, _ := io.ReadAll(resp.Body)
-		assert.JSONEq(t, `{"message":"Invalid date"}`, string(body))
-	})
-
-	t.Run("Date in the future", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodPost, "/important-dates", nil)
-		q := req.URL.Query()
-		futureDate := time.Now().AddDate(0, 0, 1).Format("2006-01-02")
-		q.Add("date", futureDate)
-		req.URL.RawQuery = q.Encode()
-		w := httptest.NewRecorder()
-
-		handler := handlers.NewImportantDatesHandler()
-		handler.HandleImportantDatesPost(w, req)
-		resp := w.Result()
-		defer resp.Body.Close()
-
-		assert.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
-		body, _ := io.ReadAll(resp.Body)
-		assert.JSONEq(t, `{"message":"The date cannot be in the future"}`, string(body))
-	})
+			assert.Equal(t, tt.expectedStatus, resp.StatusCode)
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			assert.JSONEq(t, tt.expectedBody, string(body))
+		})
+	}
 }
