@@ -19,7 +19,7 @@ func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, 
 	dateOfDeathStr := r.URL.Query().Get("date")
 
 	if dateOfDeathStr == "" {
-		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Missing date param"))
+		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Missing date"))
 		return
 	}
 

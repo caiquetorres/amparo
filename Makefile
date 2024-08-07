@@ -5,4 +5,4 @@ run: build
 	@./bin/amparo
 
 test:
-	@go test
+	@go test ./... -v
