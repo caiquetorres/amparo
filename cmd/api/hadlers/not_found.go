@@ -13,5 +13,5 @@ func NewNotFoundHandler() *NotFoundHandler {
 }
 
 func (h *NotFoundHandler) HandleNotFound(w http.ResponseWriter, r *http.Request) {
-	internal.WriteJSON(w, http.StatusNotFound, internal.ApiError{Message: "Not found"})
+	internal.WriteJSON(w, http.StatusNotFound, internal.NewApiError("Not found"))
 }

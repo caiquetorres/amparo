@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 
 	handlers "github.com/caiquetorres/amparo/cmd/api/hadlers"
@@ -10,4 +11,5 @@ import (
 func SetupNotFoundRoutes(router *mux.Router) {
 	handler := handlers.NewNotFoundHandler()
 	router.NotFoundHandler = http.HandlerFunc(handler.HandleNotFound)
+	log.Println("Mapped Not Found")
 }

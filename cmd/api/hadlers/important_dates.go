@@ -16,23 +16,32 @@ func NewImportantDatesHandler() *ImportantDatesHandler {
 }
 
 func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, r *http.Request) {
-	dateStr := r.URL.Query().Get("date")
-	dateOfDeath, err := validators.ParseDate(dateStr)
+	dateOfDeathStr := r.URL.Query().Get("date")
+
+	if dateOfDeathStr == "" {
+		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Missing date param"))
+		return
+	}
+
+	dateOfDeath, err := validators.ParseDate(dateOfDeathStr)
+
+	w.Header().Add("Content-Type", "application/json")
+
 	if err != nil {
-		w.Header().Add("Content-Type", "application/json")
 		internal.WriteJSON(w, http.StatusBadRequest, internal.NewApiError("Invalid date"))
 		return
 	}
+
 	if dateOfDeath.After(time.Now()) {
-		w.Header().Add("Content-Type", "application/json")
 		internal.WriteJSON(w, http.StatusUnprocessableEntity, internal.NewApiError("The date cannot be in the future"))
 		return
 	}
+
 	scheduleMass := dateOfDeath.AddDate(0, 0, 3)
 	registerDeath := dateOfDeath.AddDate(0, 0, 15)
 	pensionRequest := dateOfDeath.AddDate(0, 0, 90)
 	insuranceClaim := dateOfDeath.AddDate(0, 0, 365)
-	w.Header().Add("Content-Type", "application/json")
+
 	internal.WriteJSON(w, http.StatusOK, dtos.ImportantDatesResponse{
 		ScheduleMass:   scheduleMass.Format("2006-01-02"),
 		RegisterDeath:  registerDeath.Format("2006-01-02"),
