@@ -1,0 +1,66 @@
+basePath: /v2
+definitions:
+  dtos.GetImportantDates:
+    properties:
+      date_of_death:
+        type: string
+    type: object
+  dtos.ImportantDateResponse:
+    properties:
+      date:
+        type: string
+      name:
+        type: string
+    type: object
+  internal.ApiError:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Amparo API
+  version: "1.0"
+paths:
+  /important-dates:
+    post:
+      consumes:
+      - application/json
+      description: Calculates important dates based on a provided date of death.
+      parameters:
+      - description: Important Dates Payload
+        in: body
+        name: importantDates
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.GetImportantDates'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ImportantDateResponse'
+            type: array
+        "400":
+          description: Invalid JSON body or missing/invalid date_of_death property
+          schema:
+            $ref: '#/definitions/internal.ApiError'
+        "422":
+          description: The date_of_death cannot be in the future
+          schema:
+            $ref: '#/definitions/internal.ApiError'
+      summary: Get Important Dates
+      tags:
+      - Important Dates
+  /ping:
+    get:
+      description: check connection
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+      summary: Ping
+swagger: "2.0"

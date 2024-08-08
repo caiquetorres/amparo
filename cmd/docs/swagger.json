@@ -1,0 +1,103 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Amparo API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/v2",
+    "paths": {
+        "/important-dates": {
+            "post": {
+                "description": "Calculates important dates based on a provided date of death.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Important Dates"
+                ],
+                "summary": "Get Important Dates",
+                "parameters": [
+                    {
+                        "description": "Important Dates Payload",
+                        "name": "importantDates",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GetImportantDates"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.ImportantDateResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON body or missing/invalid date_of_death property",
+                        "schema": {
+                            "$ref": "#/definitions/internal.ApiError"
+                        }
+                    },
+                    "422": {
+                        "description": "The date_of_death cannot be in the future",
+                        "schema": {
+                            "$ref": "#/definitions/internal.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping": {
+            "get": {
+                "description": "check connection",
+                "produces": [
+                    "text/plain"
+                ],
+                "summary": "Ping",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dtos.GetImportantDates": {
+            "type": "object",
+            "properties": {
+                "date_of_death": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ImportantDateResponse": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal.ApiError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

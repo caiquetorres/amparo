@@ -8,6 +8,11 @@ func NewPingHandler() *PingHandler {
 	return &PingHandler{}
 }
 
+// @Summary Ping
+// @Description check connection
+// @Produce  plain
+// @Success 200
+// @Router /ping [get]
 func (h *PingHandler) HandlePingGet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)

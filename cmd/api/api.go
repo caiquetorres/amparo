@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/caiquetorres/amparo/api/middleware"
-	"github.com/caiquetorres/amparo/api/routes"
+	"github.com/caiquetorres/amparo/cmd/api/middleware"
+	"github.com/caiquetorres/amparo/cmd/api/routes"
 	"github.com/gorilla/mux"
 )
 
@@ -14,7 +14,7 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(true)
 	subRouter := router.PathPrefix("/api").Subrouter()
 
 	router.Use(middleware.Logging)

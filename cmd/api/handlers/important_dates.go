@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/caiquetorres/amparo/api/dtos"
-	"github.com/caiquetorres/amparo/api/validators"
+	"github.com/caiquetorres/amparo/cmd/api/dtos"
+	"github.com/caiquetorres/amparo/cmd/api/validators"
 	"github.com/caiquetorres/amparo/internal"
 )
 
@@ -16,6 +16,17 @@ func NewImportantDatesHandler() *ImportantDatesHandler {
 	return &ImportantDatesHandler{}
 }
 
+// HandleImportantDatesPost godoc
+// @Summary      Get Important Dates
+// @Description  Calculates important dates based on a provided date of death.
+// @Tags         Important Dates
+// @Accept       json
+// @Produce      json
+// @Param        importantDates body dtos.GetImportantDates true "Important Dates Payload"
+// @Success      200 {array} dtos.ImportantDateResponse
+// @Failure      400 {object} internal.ApiError "Invalid JSON body or missing/invalid date_of_death property"
+// @Failure      422 {object} internal.ApiError "The date_of_death cannot be in the future"
+// @Router       /important-dates [post]
 func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, r *http.Request) {
 	// Get the payload
 	var importantDates dtos.GetImportantDates

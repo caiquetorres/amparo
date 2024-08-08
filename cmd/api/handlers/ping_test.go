@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	handlers "github.com/caiquetorres/amparo/api/hadlers"
+	"github.com/caiquetorres/amparo/cmd/api/handlers"
 	"github.com/stretchr/testify/assert"
 )
 

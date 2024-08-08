@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/caiquetorres/amparo/api/dtos"
-	handlers "github.com/caiquetorres/amparo/api/hadlers"
+	"github.com/caiquetorres/amparo/cmd/api/dtos"
+	"github.com/caiquetorres/amparo/cmd/api/handlers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
