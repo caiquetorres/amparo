@@ -8,5 +8,5 @@ test:
 	@go test ./... -v
 
 build_lambda:
-	@GOARCH=arm64 GOOS=linux go build -o bin/bootstrap cmd/main.go
+	@GOARCH=arm64 GOOS=linux go build -o bin/bootstrap cmd/lambda/main.go
 	@zip -rj bootstrap.zip bin/bootstrap
