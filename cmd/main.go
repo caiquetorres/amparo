@@ -1,26 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-
-	"github.com/caiquetorres/amparo/cmd/api"
-	"github.com/caiquetorres/amparo/config"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/awslabs/aws-lambda-go-api-proxy/gorillamux"
+	"github.com/caiquetorres/amparo/cmd/api/middleware"
+	"github.com/caiquetorres/amparo/cmd/api/routes"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	server := api.NewServer(fmt.Sprintf(":%s", config.Envs.Port))
-	go func() {
-		if err := server.Run(); err != nil && err != http.ErrServerClosed {
-			panic(err)
-		}
-	}()
-	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, syscall.SIGTERM, os.Interrupt, syscall.SIGINT)
-	<-stop
-	log.Println("Server stopped")
+	router := mux.NewRouter()
+	subRouter := router.PathPrefix("/api").Subrouter()
+
+	router.Use(middleware.Logging)
+	router.Use(middleware.Cors)
+
+	routes.SetupNotFoundRoutes(router)
+	routes.SetupPingRoutes(subRouter)
+	routes.SetupImportantDatesRoutes(subRouter)
+
+	adapter := gorillamux.NewV2(router)
+	lambda.Start(adapter.ProxyWithContext)
 }
