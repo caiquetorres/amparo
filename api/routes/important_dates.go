@@ -3,7 +3,7 @@ package routes
 import (
 	"log"
 
-	handlers "github.com/caiquetorres/amparo/cmd/api/hadlers"
+	handlers "github.com/caiquetorres/amparo/api/hadlers"
 	"github.com/gorilla/mux"
 )
 

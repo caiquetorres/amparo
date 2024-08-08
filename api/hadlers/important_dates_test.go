@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/caiquetorres/amparo/cmd/api/dtos"
-	handlers "github.com/caiquetorres/amparo/cmd/api/hadlers"
+	"github.com/caiquetorres/amparo/api/dtos"
+	handlers "github.com/caiquetorres/amparo/api/hadlers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -55,10 +55,10 @@ func TestHandleImportantDatesPost(t *testing.T) {
 		{
 			name: "Valid date param",
 			requestBody: dtos.GetImportantDates{
-				DateOfDeath: "2024-02-28",
+				DateOfDeath: "2024-02-15",
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"schedule_mass": "2024-03-02","register_death": "2024-03-14","pension_request": "2024-05-28","insurance_claim": "2025-02-27"}`,
+			expectedBody:   `[{"name":"schedule_mass","date":"2024-02-18"},{"name":"register_deach","date":"2024-03-01"},{"name":"pension_request","date":"2024-05-15"},{"name":"insurange_claim","date":"2025-02-14"}]`,
 		},
 	}
 

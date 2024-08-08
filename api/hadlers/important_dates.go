@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/caiquetorres/amparo/cmd/api/dtos"
-	"github.com/caiquetorres/amparo/cmd/api/validators"
+	"github.com/caiquetorres/amparo/api/dtos"
+	"github.com/caiquetorres/amparo/api/validators"
 	"github.com/caiquetorres/amparo/internal"
 )
 
@@ -17,6 +17,7 @@ func NewImportantDatesHandler() *ImportantDatesHandler {
 }
 
 func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, r *http.Request) {
+	// Get the payload
 	var importantDates dtos.GetImportantDates
 	err := json.NewDecoder(r.Body).Decode(&importantDates)
 
@@ -46,15 +47,24 @@ func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, 
 		return
 	}
 
-	scheduleMass := dateOfDeath.AddDate(0, 0, 3)
-	registerDeath := dateOfDeath.AddDate(0, 0, 15)
-	pensionRequest := dateOfDeath.AddDate(0, 0, 90)
-	insuranceClaim := dateOfDeath.AddDate(0, 0, 365)
+	dates := []dtos.ImportantDateResponse{
+		{
+			Name: "schedule_mass",
+			Date: dateOfDeath.AddDate(0, 0, 3).Format("2006-01-02"),
+		},
+		{
+			Name: "register_deach",
+			Date: dateOfDeath.AddDate(0, 0, 15).Format("2006-01-02"),
+		},
+		{
+			Name: "pension_request",
+			Date: dateOfDeath.AddDate(0, 0, 90).Format("2006-01-02"),
+		},
+		{
+			Name: "insurange_claim",
+			Date: dateOfDeath.AddDate(0, 0, 365).Format("2006-01-02"),
+		},
+	}
 
-	internal.WriteJSON(w, http.StatusOK, dtos.ImportantDatesResponse{
-		ScheduleMass:   scheduleMass.Format("2006-01-02"),
-		RegisterDeath:  registerDeath.Format("2006-01-02"),
-		PensionRequest: pensionRequest.Format("2006-01-02"),
-		InsuranceClaim: insuranceClaim.Format("2006-01-02"),
-	})
+	internal.WriteJSON(w, http.StatusOK, dates)
 }

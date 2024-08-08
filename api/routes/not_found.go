@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	handlers "github.com/caiquetorres/amparo/cmd/api/hadlers"
+	handlers "github.com/caiquetorres/amparo/api/hadlers"
 	"github.com/gorilla/mux"
 )
 

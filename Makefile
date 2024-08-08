@@ -7,6 +7,6 @@ run: build
 test:
 	@go test ./... -v
 
-deploy:
+build_lambda:
 	@GOARCH=arm64 GOOS=linux go build -o bin/bootstrap cmd/main.go
 	@zip -rj bootstrap.zip bin/bootstrap
