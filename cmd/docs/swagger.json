@@ -5,9 +5,8 @@
         "contact": {},
         "version": "1.0"
     },
-    "basePath": "/v2",
     "paths": {
-        "/important-dates": {
+        "/api/important-dates": {
             "post": {
                 "description": "Calculates important dates based on a provided date of death.",
                 "consumes": [
@@ -56,7 +55,7 @@
                 }
             }
         },
-        "/ping": {
+        "/api/ping": {
             "get": {
                 "description": "check connection",
                 "produces": [

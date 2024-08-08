@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/important-dates": {
+        "/api/important-dates": {
             "post": {
                 "description": "Calculates important dates based on a provided date of death.",
                 "consumes": [
@@ -64,7 +64,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/ping": {
+        "/api/ping": {
             "get": {
                 "description": "check connection",
                 "produces": [
@@ -114,7 +114,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/v2",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Amparo API",
 	Description:      "",

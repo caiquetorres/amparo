@@ -26,7 +26,7 @@ func NewImportantDatesHandler() *ImportantDatesHandler {
 // @Success      200 {array} dtos.ImportantDateResponse
 // @Failure      400 {object} internal.ApiError "Invalid JSON body or missing/invalid date_of_death property"
 // @Failure      422 {object} internal.ApiError "The date_of_death cannot be in the future"
-// @Router       /important-dates [post]
+// @Router       /api/important-dates [post]
 func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, r *http.Request) {
 	// Get the payload
 	var importantDates dtos.GetImportantDates

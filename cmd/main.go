@@ -9,7 +9,6 @@ import (
 
 // @title Amparo API
 // @version 1.0
-// @BasePath /v2
 func main() {
 	server := api.NewServer()
 	server.Router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)

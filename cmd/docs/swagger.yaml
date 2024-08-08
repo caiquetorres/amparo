@@ -1,4 +1,3 @@
-basePath: /v2
 definitions:
   dtos.GetImportantDates:
     properties:
@@ -22,7 +21,7 @@ info:
   title: Amparo API
   version: "1.0"
 paths:
-  /important-dates:
+  /api/important-dates:
     post:
       consumes:
       - application/json
@@ -54,7 +53,7 @@ paths:
       summary: Get Important Dates
       tags:
       - Important Dates
-  /ping:
+  /api/ping:
     get:
       description: check connection
       produces:
