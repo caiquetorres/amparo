@@ -58,7 +58,7 @@ func TestHandleImportantDatesPost(t *testing.T) {
 				DateOfDeath: "2024-02-15",
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody:   `[{"name":"schedule_mass","date":"2024-02-18"},{"name":"register_deach","date":"2024-03-01"},{"name":"pension_request","date":"2024-05-15"},{"name":"insurange_claim","date":"2025-02-14"}]`,
+			expectedBody:   `[{"name":"schedule mass","date":"2024-02-18"},{"name":"register death","date":"2024-03-01"},{"name":"pension request","date":"2024-05-15"},{"name":"insurange claim","date":"2025-02-14"}]`,
 		},
 	}
 

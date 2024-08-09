@@ -60,19 +60,19 @@ func (h *ImportantDatesHandler) HandleImportantDatesPost(w http.ResponseWriter, 
 
 	dates := []dtos.ImportantDateResponse{
 		{
-			Name: "schedule_mass",
+			Name: "schedule mass",
 			Date: dateOfDeath.AddDate(0, 0, 3).Format("2006-01-02"),
 		},
 		{
-			Name: "register_deach",
+			Name: "register death",
 			Date: dateOfDeath.AddDate(0, 0, 15).Format("2006-01-02"),
 		},
 		{
-			Name: "pension_request",
+			Name: "pension request",
 			Date: dateOfDeath.AddDate(0, 0, 90).Format("2006-01-02"),
 		},
 		{
-			Name: "insurange_claim",
+			Name: "insurange claim",
 			Date: dateOfDeath.AddDate(0, 0, 365).Format("2006-01-02"),
 		},
 	}
